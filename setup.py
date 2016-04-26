@@ -24,7 +24,7 @@ test_requirements = [
 ]
 
 setup(
-    name='x',
+    name='keras_dqn',
     version='0.0.1',
     description="keras_dqn",
     long_description=readme + '\n\n',  # + history,
