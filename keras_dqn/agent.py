@@ -15,8 +15,8 @@ class Agent(object):
             self.target_model = model
         else:
             self.target_model = target_model
-            self.target_swap = "__swap.hdf5"
-            print("Using __swap.hdf5 as swap file for the target model")
+            self.target_swap = True
+            print("Using target model update.")
 
     @property
     def num_actions(self):
@@ -40,9 +40,9 @@ class Agent(object):
             self.model.train_on_batch(state, target, sample_weight=None)
 
     def update_target(self):
-        if self.target_swap is not None:
-            self.model.save_weights(self.target_swap, True)
-            self.target_model.load_weights(self.target_swap)
+        if self.target_swap:
+            weights = self.model.get_weights()
+            self.target_model.set_weights(weights)
 
     def fit(env, batch_size, epochs):
         """Learn to play
