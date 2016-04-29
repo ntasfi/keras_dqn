@@ -5,7 +5,7 @@ from keras.utils.np_utils import to_categorical
 class Agent(object):
     def __init__(self, model, target_model=None, update_model_every=1,
                  update_target_every=1, min_n_frames=1, frames_per_epoch=1,
-                 eps=.1, eps_rate=1, min_eps=0, test_eps=0):
+                 eps=.1, eps_rate=1, min_eps=0, test_eps=0, rng_seed=123):
         """
         Parameters:
         -----------
@@ -19,7 +19,11 @@ class Agent(object):
         eps_rate: epsilon annealing rate
         min_eps: min epsilon
         test_eps: probability of random action during test
+        rng_seed
         """
+        self.rng_seed = rng_seed
+        np.random.seed(rng_seed)
+
         self.model = model
         if target_model is None:
             self.target_model = model
