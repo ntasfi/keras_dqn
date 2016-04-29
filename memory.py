@@ -17,6 +17,10 @@ class Memory():
 
         """
 
+    def __len__(self):
+        #return the length of the memory
+        pass
+
     def _adjust_memory(self):
         """
             this will take care of adjusting the memory size so it states within the limits
