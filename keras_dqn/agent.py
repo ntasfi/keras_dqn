@@ -29,11 +29,9 @@ class Agent(object):
 
         # target = reward + gamma * max Q(s', a')
         target = np.copy(q)  # we will use indexing next, avoid aliasing
-        target[idx == 1] = next_max_q  # WARN: should only adapt actions taken
-        # TODO: is this faster? target = q * idx + (1-idx) * next_max_q[:, np.newaxis].repeat(self.numactions, 1)
-
         # @ntasfi, regardless of what is target (1-terminal) zeros it out that is why I thought we don't have to store terminal states
-        target = reward + (1-terminal) * gamma * target
+        target[idx == 1] = reward + (1-terminal) * gamma * next_max_q  # WARN: should only adapt actions taken
+        # TODO: is this faster? target = q * idx + (1-idx) * next_max_q[:, np.newaxis].repeat(self.numactions, 1)
 
         # gradient step
         if accum_mode == "mean":
