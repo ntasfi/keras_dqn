@@ -53,7 +53,7 @@ class Agent(object):
 
     def get_action(self, observation, train=False):
         rnd = np.random.rand()
-        rnd_action = [np.random.randint(0, self.n_actions)]
+        rnd_action = np.random.randint(0, self.n_actions)
         if train and rnd < self.eps:
             return rnd_action
         elif train is False and rnd < self.test_eps:
@@ -63,7 +63,7 @@ class Agent(object):
             q = self.model.predict(observation)
             # random tie breaker
             max_inds = np.argwhere(q == np.max(q))
-            return np.random.choice(max_inds.reshape(-1,))[np.newaxis]
+            return np.random.choice(max_inds.reshape(-1,))
 
     def train_on_batch(self, state, action, reward, next_state, terminal, gamma=.99, accum_mode="mean"):
         q = self.model.predict(state)
