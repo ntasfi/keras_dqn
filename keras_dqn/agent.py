@@ -5,7 +5,7 @@ from keras.utils.np_utils import to_categorical
 class Agent(object):
     def __init__(self, model, target_model=None, update_model_every=1,
                  update_target_every=1, min_n_frames=1, frames_per_epoch=1,
-                 eps=.1, eps_rate=1, min_eps=0, test_eps=0, rng_seed=123):
+                 eps=.1, eps_rate=1, min_eps=0, test_eps=0, rng=np.random):
         """
         Parameters:
         -----------
@@ -21,8 +21,7 @@ class Agent(object):
         test_eps: probability of random action during test
         rng_seed
         """
-        self.rng_seed = rng_seed
-        np.random.seed(rng_seed)
+        self.rng = rng
 
         self.model = model
         if target_model is None:
@@ -52,8 +51,8 @@ class Agent(object):
         return self.model.input_shape
 
     def get_action(self, observation, train=False):
-        rnd = np.random.rand()
-        rnd_action = np.random.randint(0, self.n_actions)
+        rnd = self.rng.rand()
+        rnd_action = self.rng.randint(0, self.n_actions)
         if train and rnd < self.eps:
             return rnd_action
         elif train is False and rnd < self.test_eps:
@@ -63,9 +62,9 @@ class Agent(object):
             q = self.model.predict(observation)
             # random tie breaker
             max_inds = np.argwhere(q == np.max(q))
-            return np.random.choice(max_inds.reshape(-1,))
+            return self.rng.choice(max_inds.reshape(-1,))
 
-    def train_on_batch(self, state, action, reward, next_state, terminal, gamma=.99, accum_mode="mean"):
+    def _train_on_batch(self, state, action, reward, next_state, terminal, gamma=.99, accum_mode="mean"):
         q = self.model.predict(state)
         next_max_q = np.max(self.target_model.predict(next_state), axis=-1)
         idx = to_categorical(action, self.n_actions)  # transform actions to one-hot indices
@@ -88,5 +87,10 @@ class Agent(object):
         Extra desired args:
         eps, eps_min, frames_to_min_eps
 
+        """
+        pass
+
+    def play(env, epochs):
+        """Follow learned policy and play game
         """
         pass
